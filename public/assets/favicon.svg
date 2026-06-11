@@ -1,0 +1,29 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6366F1"/>
+      <stop offset="1" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#EEF1FF"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background squircle -->
+  <rect x="0" y="0" width="64" height="64" rx="15" fill="url(#bg)"/>
+
+  <!-- Back card (the pair), tilted -->
+  <g transform="rotate(-12 30 32)">
+    <rect x="14" y="16" width="26" height="34" rx="5" fill="#C4B5FD"/>
+    <rect x="14" y="16" width="26" height="34" rx="5" fill="#FFFFFF" opacity="0.25"/>
+  </g>
+
+  <!-- Front card, tilted opposite -->
+  <g transform="rotate(8 36 34)">
+    <rect x="26" y="16" width="26" height="34" rx="5" fill="url(#card)"/>
+    <!-- Question mark -->
+    <text x="39" y="40" font-family="Arial, Helvetica, sans-serif" font-size="26"
+          font-weight="700" fill="#6D28D9" text-anchor="middle">?</text>
+  </g>
+</svg>
