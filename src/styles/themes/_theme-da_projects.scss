@@ -1,0 +1,26 @@
+:root[data-theme="da_projects"] {
+  --color-primary: #1E7594;
+  --color-secondary: white;
+  
+  --card-aspect: 3/2;
+  --card-radius: 12px;
+  --card-background: var(--color-primary);
+  --card-shaddow: none;
+ 
+  --border-filter: none;
+
+  --navbar-bg: #F0F3F4;
+  
+  --player-label-background: white;
+
+  --btn-bg: #BFE5F2;
+  --btn-border-color: none;
+  --btn-font-color: var(--color-primary);
+  --btn-border-radius: 10px;
+
+  --exit-btn-cancel-bg: var(--btn-bg);
+  --exit-btn-confirm-bg: #FD8A81;
+  --exit-btn-cancel-font-color: var(--color-primary);
+  --exit-btn-confirm-font-color: white;
+  --exit-btn-shaddow: 3px 3px 5px rgba(47, 46, 46, 0.2);
+}

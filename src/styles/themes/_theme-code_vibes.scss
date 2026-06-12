@@ -1,0 +1,26 @@
+:root[data-theme="code_vibes"] {
+  --color-primary: #4DD5BC;
+  --color-secondary: #303131;
+
+  --card-aspect: 1/1;
+  --card-radius: 0px;
+  --card-background: linear-gradient(212.26deg, #4DD5BC 29.42%, #286F62 123.94%);
+  --card-shaddow: none;
+  
+  --border-filter: none;
+
+  --navbar-bg: transparent;
+
+  --player-label-background: #86e9d533;
+
+  --btn-bg: var(--player-background);
+  --btn-border-color: var(--color-primary);
+  --btn-font-color: white;
+  --btn-border-radius: 0px;
+
+  --exit-btn-cancel-bg: #66CFBC;
+  --exit-btn-confirm-bg: #86e9d524;
+  --exit-btn-cancel-font-color: white;
+  --exit-btn-confirm-font-color: var(--color-primary);
+  --exit-btn-shaddow: none;
+}

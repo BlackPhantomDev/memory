@@ -1,0 +1,26 @@
+:root[data-theme="food"] {
+  --color-primary: #F3832D;
+  --color-secondary: white;
+
+  --card-aspect: 1/1;
+  --card-radius: 0px;
+  --card-background: var(--color-primary);
+  --card-shaddow: none;
+  
+  --border-filter: url('#sketch');
+
+  --navbar-bg: #F0E5D9;
+
+  --player-label-background: white;
+
+  --btn-bg: white;
+  --btn-border-color: none;
+  --btn-font-color: var(--color-primary);
+  --btn-border-radius: 10px;
+
+  --exit-btn-cancel-bg: #FFAB3E;
+  --exit-btn-confirm-bg: #FFF9F2;
+  --exit-btn-cancel-font-color: white;
+  --exit-btn-confirm-font-color: var(--color-primary);
+  --exit-btn-shaddow: none;
+}

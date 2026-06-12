@@ -1,0 +1,26 @@
+:root[data-theme="games"] {
+  --color-primary: #ED1B76;
+  --color-secondary: #294F60;
+  
+  --card-aspect: 2/3;
+  --card-radius: 12px;
+  --card-background: linear-gradient(147.13deg, #ED1B76 1.28%, #0A2835 142.53%);;
+  --card-shaddow: 0px 4px 4px rgba(0, 0, 0, 0.25);;
+  
+  --border-filter: none;
+
+  --navbar-bg: #fd96c933;
+  
+  --player-label-background: white;
+
+  --btn-bg: #ed1b7614;
+  --btn-border-color: #E71C4F;
+  --btn-font-color: white;
+  --btn-border-radius: 10px;
+
+  --exit-btn-cancel-bg: var(--color-primary);
+  --exit-btn-confirm-bg: var(--btn-bg);
+  --exit-btn-cancel-font-color: white;
+  --exit-btn-confirm-font-color: var(--color-primary);
+  --exit-btn-shaddow: none;
+}
