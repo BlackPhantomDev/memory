@@ -9,7 +9,7 @@
   
   --border-filter: none;
 
-  --navbar-bg: transparent;
+  --header-bg: transparent;
 
   --player-label-background: #86e9d533;
 
@@ -23,4 +23,7 @@
   --exit-btn-cancel-font-color: white;
   --exit-btn-confirm-font-color: var(--color-primary);
   --exit-btn-shaddow: none;
+
+  --background-color: var(--color-secondary);
+  --footer-color: white;
 }
