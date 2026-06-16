@@ -2,6 +2,9 @@
   --color-primary: #4DD5BC;
   --color-secondary: #303131;
 
+  --font-family-primary: RedRose;
+  --font-family-btn: RedRose;
+
   --card-aspect: 1/1;
   --card-radius: 0px;
   --card-background: linear-gradient(212.26deg, #4DD5BC 29.42%, #286F62 123.94%);
@@ -10,10 +13,19 @@
   --border-filter: none;
 
   --header-bg: transparent;
+  --header-margin: 16px 64px 0 64px;
+  --header-padding: 24px 32px;
 
   --player-label-background: #86e9d533;
+  --player-label-padding: 8px 16px;
+  --font-family-player: var(--font-family-primary);
 
-  --btn-bg: var(--player-background);
+  --color-current-player: white;
+  --font-weight-current-player: Regular;
+  --font-size-current-player: 26px;
+
+  --btn-bg: var(--player-label-background);
+  --btn-bg-img: unset;
   --btn-border-color: var(--color-primary);
   --btn-font-color: white;
   --btn-border-radius: 0px;
@@ -22,7 +34,14 @@
   --exit-btn-confirm-bg: #86e9d524;
   --exit-btn-cancel-font-color: white;
   --exit-btn-confirm-font-color: var(--color-primary);
+
   --exit-btn-shaddow: none;
+  --exit-btn-font-size: 24px;
+  --exit-btn-font-color: white;
+  --exit-btn-font-color-hover: white;
+  --exit-btn-bg-hover: rgba(134, 233, 213, 0.26);
+  --exit-btn-icon-hover: white;
+  --exit-btn-bg-img: unset;
 
   --background-color: var(--color-secondary);
   --footer-color: white;

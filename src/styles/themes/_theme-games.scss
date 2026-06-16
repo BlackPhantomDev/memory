@@ -1,19 +1,31 @@
 :root[data-theme="games"] {
   --color-primary: #ED1B76;
   --color-secondary: #294F60;
+
+  --font-family-primary: Orbitron;
+  --font-family-btn: Orbitron;
   
   --card-aspect: 2/3;
   --card-radius: 12px;
   --card-background: linear-gradient(147.13deg, #ED1B76 1.28%, #0A2835 142.53%);;
-  --card-shaddow: 0px 4px 4px rgba(0, 0, 0, 0.25);;
+  --card-shaddow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   
   --border-filter: none;
 
   --header-bg: #fd96c933;
+  --header-margin: 32px 32px 0;
+  --header-padding: 24px 32px;
   
   --player-label-background: white;
+  --player-label-padding: 8px 16px;
+  --font-family-player: var(--font-family-primary);
 
-  --btn-bg: #ed1b7614;
+  --color-current-player: white;
+  --font-weight-current-player: Bold;
+  --font-size-current-player: 32px;
+
+  --btn-bg: rgba(237, 27, 118, 0.08);
+  --btn-bg-img: unset;
   --btn-border-color: #E71C4F;
   --btn-font-color: white;
   --btn-border-radius: 10px;
@@ -22,7 +34,14 @@
   --exit-btn-confirm-bg: var(--btn-bg);
   --exit-btn-cancel-font-color: white;
   --exit-btn-confirm-font-color: var(--color-primary);
-  --exit-btn-shaddow: none;
+
+  --exit-btn-shadow: 3px 4px 5px rgba(0, 0, 0, 0.25);
+  --exit-btn-font-size: 20px;
+  --exit-btn-font-color: white;
+  --exit-btn-font-color-hover: white;
+  --exit-btn-bg-hover: rgba(237, 27, 118, 0.14);
+  --exit-btn-icon-hover: var(--color-primary);
+  --exit-btn-bg-img: unset;
 
   --background-color: var(--color-secondary);
   --footer-color: white;

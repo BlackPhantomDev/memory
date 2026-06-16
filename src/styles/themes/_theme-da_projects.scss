@@ -1,6 +1,9 @@
 :root[data-theme="da_projects"] {
   --color-primary: #1E7594;
   --color-secondary: white;
+
+  --font-family-primary: Figtree;
+  --font-family-btn: Figtree;
   
   --card-aspect: 3/2;
   --card-radius: 12px;
@@ -10,10 +13,19 @@
   --border-filter: none;
 
   --header-bg: #F0F3F4;
+  --header-margin: 32px 64px 0 64px;
+  --header-padding: 24px 32px;
   
   --player-label-background: white;
+  --player-label-padding: 8px 16px;
+  --font-family-player: var(--font-family-primary);
+
+  --color-current-player: var(--color-primary);
+  --font-weight-current-player: Bold;
+  --font-size-current-player: 32px;
 
   --btn-bg: #BFE5F2;
+  --btn-bg-img: unset;
   --btn-border-color: none;
   --btn-font-color: var(--color-primary);
   --btn-border-radius: 10px;
@@ -22,7 +34,13 @@
   --exit-btn-confirm-bg: #FD8A81;
   --exit-btn-cancel-font-color: var(--color-primary);
   --exit-btn-confirm-font-color: white;
+
   --exit-btn-shaddow: 3px 3px 5px rgba(47, 46, 46, 0.2);
+  --exit-btn-font-size: 20px;
+  --exit-btn-font-color: var(--color-primary);
+  --exit-btn-font-color-hover: white;
+  --exit-btn-bg-hover: var(--color-primary);
+  --exit-btn-icon-hover: white;
 
   --background-color: white;
   --footer-color: var(--color-primary);

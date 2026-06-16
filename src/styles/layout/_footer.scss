@@ -1,0 +1,21 @@
+@use '../abstracts/mixins' as *;
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    @include flex-center;
+    gap: 16px;
+    width: 100%;
+    height: 100px;
+    font-family: Almarai;
+    font-size: 18px;
+    & a, & p{
+        color: var(--footer-color);
+        text-decoration: none;
+    &a:hover {
+            font-style: italic;
+            cursor: pointer;
+        }
+    };
+}
