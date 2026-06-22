@@ -155,15 +155,3 @@ export function renderBoard(pairs: number = DEFAULT_PAIRS, theme: Theme = curren
 
     board.innerHTML = deck.map(id => cardMarkup(id, theme)).join('');
 }
-
-/**
- * Enables flipping a card on click for the preview.
- * Does not yet include match logic.
- */
-export function enableBoardFlip(): void {
-    const board = document.querySelector<HTMLElement>('#memory-board');
-    board?.addEventListener('click', e => {
-        const card = (e.target as HTMLElement).closest('.card');
-        card?.classList.toggle('is-flipped');
-    });
-}
