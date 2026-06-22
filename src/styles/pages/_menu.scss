@@ -1,0 +1,215 @@
+@use '../abstracts/mixins' as *;
+
+$menu-dark: #303131;
+
+// The settings screen sits on a neutral light background regardless of theme,
+// so the footer text needs a dark color to stay readable.
+body.menu-open {
+    background: #fff;
+
+    & footer a,
+    & footer p {
+        color: $menu-dark;
+    }
+}
+
+#main-menu {
+    width: 100%;
+    min-height: calc(100vh - 100px);
+    max-width: 1280px;
+    margin-inline: auto;
+    padding: clamp(40px, 6vh, 80px) clamp(24px, 8vw, 120px);
+    box-sizing: border-box;
+    background: #fff;
+    color: $menu-dark;
+    font-family: Figtree, sans-serif;
+
+    display: grid;
+    grid-template-columns: minmax(260px, 1fr) minmax(440px, 540px);
+    grid-template-areas:
+        'title  side'
+        'groups side';
+    column-gap: clamp(40px, 8vw, 110px);
+    row-gap: 56px;
+    align-content: center;
+}
+
+#menu-title {
+    grid-area: title;
+    width: max-content;
+    padding-bottom: 14px;
+    border-bottom: 6px solid var(--start-btn);
+    font-family: RedRose, sans-serif;
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 700;
+    line-height: 1;
+}
+
+#menu-groups {
+    grid-area: groups;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.menu-group {
+    margin: 0;
+    padding: 0;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    & legend {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0;
+        margin-bottom: 4px;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    &__icon {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-left: 12px;
+    font-size: 18px;
+    cursor: pointer;
+
+    & input {
+        appearance: none;
+        -webkit-appearance: none;
+        flex: none;
+        width: 20px;
+        height: 20px;
+        margin: 0;
+        border: 2px solid $menu-dark;
+        border-radius: 50%;
+        display: grid;
+        place-content: center;
+        cursor: pointer;
+
+        &::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: $menu-dark;
+            transform: scale(0);
+            transition: transform 0.15s ease;
+        }
+
+        &:checked::before {
+            transform: scale(1);
+        }
+    }
+
+    // Yellow selection arrow (line + head), shown for the checked option.
+    &__arrow {
+        position: relative;
+        width: 26px;
+        height: 3px;
+        margin-left: 6px;
+        border-radius: 2px;
+        background: var(--start-btn);
+        opacity: 0;
+        transition: opacity 0.15s ease;
+
+        &::after {
+            content: '';
+            position: absolute;
+            right: -3px;
+            top: -4px;
+            border: 6px solid transparent;
+            border-left-color: var(--start-btn);
+        }
+    }
+
+    &:has(input:checked) .option__label {
+        font-weight: 700;
+    }
+
+    &:has(input:checked) .option__arrow {
+        opacity: 1;
+    }
+}
+
+#menu-side {
+    grid-area: side;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    gap: 24px;
+}
+
+#theme-preview {
+    display: block;
+    width: 100%;
+    max-width: 460px;
+    height: auto;
+    border-radius: 16px;
+}
+
+#menu-summary {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 12px 18px;
+    border-radius: 12px;
+    background: #f4f4f4;
+    font-size: 15px;
+}
+
+// Fixed slot widths keep the separators and start button from shifting as the
+// selected values change.
+.summary-item {
+    flex: none;
+    white-space: nowrap;
+    text-align: center;
+}
+
+#summary-theme { width: 140px; }
+#summary-player { width: 52px; }
+#summary-size { width: 60px; }
+
+.summary-sep {
+    flex: none;
+    color: var(--start-btn);
+    font-size: 40px;
+    font-weight: 700;
+}
+
+#start-btn {
+    all: unset;
+    @include flex-center;
+    gap: 8px;
+    flex: none;
+    margin-left: auto;
+    padding: 12px 22px;
+    border-radius: 8px;
+    background: var(--start-btn);
+    color: $menu-dark;
+    font-family: RedRose, sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: scale 0.15s ease;
+
+    & img {
+        width: 22px;
+    }
+
+    &:hover {
+        scale: 1.04;
+    }
+}
