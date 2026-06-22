@@ -1,7 +1,7 @@
 @use '../abstracts/mixins' as *;
+@use 'menu';
 
 body {
-    @include flex-center;
     background-color: var(--background-color);
 }
 
@@ -9,9 +9,21 @@ body {
     position: relative;
     @include flex-center;
     flex-direction: column;
-    height: 100vh;
+    justify-content: flex-start;
+    height: calc(100vh - 100px);
     gap: 32px;
     width: 100%;
+}
+
+// Start screen fills the play area and centers its content (center / center).
+#start-screen {
+    position: relative;
+    @include flex-center;
+    flex-direction: column;
+    gap: 32px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
 #background-icon {
@@ -24,15 +36,14 @@ body {
 }
 
 #header {
-    position: absolute;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr; 
     align-items: center;  
     background-color: var(--header-bg);
+    width: 100%;
     max-width: var(--max-width);
     margin: var(--header-margin);
     padding: var(--header-padding);
-    top: 0;
     font-family: var(--font-family-primary);
     border-radius: var(--border-radius);
   
@@ -73,13 +84,12 @@ body {
     }
 
     #exit-btn {
-        @include flex-center;
-        background-position: center;
-        justify-self: flex-end;
         gap: 8px;
         color: var(--exit-btn-font-color);
         background-color: var(--btn-bg);
-        font-family: var(--font-family-btn);
+        background-image: var(--btn-bg-img);
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
         font-size: var(--exit-btn-font-size);
         font-weight: bold;
         cursor: pointer;
