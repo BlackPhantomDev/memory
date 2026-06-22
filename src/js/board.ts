@@ -1,14 +1,25 @@
 /**
  * Modular memory board.
  *
- * {@link renderBoard} rebuilds the playing field. The number of cards and the
- * theme are chosen later in the main menu and passed into the function.
+ * {@link renderBoard} generates the playing field from a pair count and theme.
+ * The number of cards and the theme are chosen in the main menu and passed in.
  *
  * @module board
  */
 
 /** Available themes (matches the folders under `/assets/themes`). */
-type Theme = 'code_vibes' | 'games' | 'da_projects' | 'food';
+export type Theme = 'code_vibes' | 'games' | 'da_projects' | 'food';
+
+/** Selectable themes with their menu labels, in display order. */
+export const THEMES: ReadonlyArray<{ id: Theme; label: string }> = [
+    { id: 'code_vibes', label: 'Code vibes theme' },
+    { id: 'games', label: 'Gaming theme' },
+    { id: 'da_projects', label: 'DA Projects theme' },
+    { id: 'food', label: 'Foods theme' },
+];
+
+/** Selectable board sizes in number of cards (pairs = cards / 2). */
+export const BOARD_SIZES = [16, 24, 36] as const;
 
 /** File extension of the motif images per theme (some ship PNG instead of SVG). */
 const FRONT_EXT: Record<Theme, string> = {
@@ -26,6 +37,38 @@ const MIN_PAIRS = 2;
 
 /** Default number of pairs until the main menu provides a selection. */
 const DEFAULT_PAIRS = 8;
+
+/**
+ * Returns the path to a theme's card back image.
+ *
+ * @param theme - The theme to use.
+ * @returns The card back asset URL.
+ */
+export function cardBackSrc(theme: Theme): string {
+    return `/assets/themes/${theme}/card-back.svg`;
+}
+
+/**
+ * Returns the path to a theme's front motif image.
+ *
+ * @param theme - The theme to use.
+ * @param id - Motif number (1…{@link MAX_PAIRS}).
+ * @returns The motif asset URL.
+ */
+export function cardFrontSrc(theme: Theme, id: number): string {
+    return `/assets/themes/${theme}/cards-front/${id}.${FRONT_EXT[theme]}`;
+}
+
+/**
+ * Returns the path to a theme's ready-made preview image (the composed mini
+ * board panel) shown in the main menu.
+ *
+ * @param theme - The theme to use.
+ * @returns The theme preview asset URL.
+ */
+export function themePreviewSrc(theme: Theme): string {
+    return `/assets/themes/${theme}/theme-preview.svg`;
+}
 
 /**
  * Shuffles an array in place using Fisher–Yates.
@@ -69,20 +112,19 @@ function themeAspect(): number {
 /**
  * Builds the markup for a single card (back and front face).
  *
- * @param id - Motif number (1…{@link MAX_PAIRS}).
+ * @param id - Motif number.
  * @param theme - Theme used to build the image paths.
  * @returns The `<button class="card">` HTML as a string.
  */
 function cardMarkup(id: number, theme: Theme): string {
-    const ext = FRONT_EXT[theme];
     return `
         <button class="card" type="button" data-card-id="${id}" aria-label="Memory card">
             <span class="card__inner">
                 <span class="card__face card__face--back">
-                    <img src="/assets/themes/${theme}/card-back.svg" alt="" />
+                    <img src="${cardBackSrc(theme)}" alt="" />
                 </span>
                 <span class="card__face card__face--front">
-                    <img src="/assets/themes/${theme}/cards-front/${id}.${ext}" alt="" />
+                    <img src="${cardFrontSrc(theme, id)}" alt="" />
                 </span>
             </span>
         </button>`;
@@ -106,7 +148,9 @@ export function renderBoard(pairs: number = DEFAULT_PAIRS, theme: Theme = curren
     const deck = shuffle([...motifs, ...motifs]);
 
     const cols = Math.ceil(Math.sqrt(deck.length));
+    const rows = Math.ceil(deck.length / cols);
     board.style.setProperty('--cols', String(cols));
+    board.style.setProperty('--rows', String(rows));
     board.style.setProperty('--aspect', String(themeAspect()));
 
     board.innerHTML = deck.map(id => cardMarkup(id, theme)).join('');
@@ -116,39 +160,10 @@ export function renderBoard(pairs: number = DEFAULT_PAIRS, theme: Theme = curren
  * Enables flipping a card on click for the preview.
  * Does not yet include match logic.
  */
-function enablePreviewFlip(): void {
+export function enableBoardFlip(): void {
     const board = document.querySelector<HTMLElement>('#memory-board');
     board?.addEventListener('click', e => {
         const card = (e.target as HTMLElement).closest('.card');
         card?.classList.toggle('is-flipped');
     });
-}
-
-/**
- * Watches `data-theme` on `<html>` and redraws the board with the same number
- * of pairs whenever the theme changes.
- */
-function observeThemeChange(): void {
-    new MutationObserver(() => renderBoard(currentBoardPairs(), currentTheme()))
-        .observe(document.documentElement, { attributeFilter: ['data-theme'] });
-}
-
-/**
- * Determines the number of pairs currently shown from the DOM.
- *
- * @returns The number of pairs on the board, falling back to {@link DEFAULT_PAIRS}.
- */
-function currentBoardPairs(): number {
-    const count = document.querySelectorAll('#memory-board .card').length;
-    return count ? count / 2 : DEFAULT_PAIRS;
-}
-
-/**
- * Initializes the board preview: renders a default board, enables click-to-flip
- * and reacts to theme changes.
- */
-export function initBoardPreview(): void {
-    renderBoard();
-    enablePreviewFlip();
-    observeThemeChange();
 }
