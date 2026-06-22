@@ -68,6 +68,15 @@ body {
         font-weight: bold;
     }
 
+    // Fixed-width counter so the label next to it does not shift on score change.
+    #player-one--counter,
+    #player-two--counter {
+        display: inline-block;
+        min-width: 1.6ch;
+        text-align: center;
+        font-variant-numeric: tabular-nums;
+    }
+
     #player-one-label figcaption {
         color: var(--color-player-one);
     }
