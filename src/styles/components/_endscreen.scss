@@ -1,0 +1,127 @@
+@use '../abstracts/mixins' as *;
+
+#endscreen {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+}
+
+.endscreen {
+    @include flex-center;
+    position: relative;
+    flex-direction: column;
+    gap: 28px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    text-align: center;
+    font-family: var(--font-family-primary);
+
+    &--gameover {
+        background: var(--gameover-bg);
+    }
+
+    &--result {
+        background: var(--result-bg);
+    }
+}
+
+.endscreen__title {
+    font-family: var(--font-family-primary);
+    font-size: clamp(40px, 7vw, 88px);
+    font-weight: 700;
+    line-height: 1;
+}
+
+.endscreen--gameover .endscreen__title {
+    color: var(--gameover-title);
+}
+
+// Draw uses the themed result title; a winner uses the player's color.
+.endscreen--result .endscreen__title {
+    color: var(--result-title);
+}
+
+.endscreen--result .endscreen__title--player-one {
+    color: var(--result-winner, var(--color-player-one));
+}
+
+.endscreen--result .endscreen__title--player-two {
+    color: var(--result-winner, var(--color-player-two));
+}
+
+.endscreen__label {
+    font-size: clamp(16px, 2vw, 22px);
+
+    .endscreen--gameover & {
+        color: var(--gameover-label);
+    }
+
+    .endscreen--result & {
+        color: var(--result-label);
+    }
+}
+
+.endscreen__graphic {
+    width: min(60vw, 230px);
+    height: auto;
+}
+
+.endscreen__confetti {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    pointer-events: none;
+}
+
+// Final score pills, mirroring the in-game player labels.
+.final-score {
+    @include flex-center;
+    gap: 16px;
+
+    &__item {
+        @include flex-center;
+        gap: 8px;
+        padding: var(--player-label-padding);
+        border-radius: var(--border-radius);
+        background: var(--player-label-background);
+        font-family: var(--font-family-player);
+        font-weight: bold;
+
+        & img {
+            width: 26px;
+        }
+
+        &--one {
+            color: var(--color-player-one);
+        }
+
+        &--two {
+            color: var(--color-player-two);
+        }
+    }
+}
+
+#play-again-btn {
+    all: unset;
+    padding: 10px 26px;
+    border: 2px solid var(--btn-border-color);
+    border-radius: var(--btn-border-radius, var(--border-radius));
+    background-color: var(--btn-bg);
+    background-image: var(--btn-bg-img);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    color: var(--btn-font-color);
+    font-family: var(--font-family-btn);
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+        box-shadow: var(--exit-btn-shadow);
+        background-color: var(--exit-btn-bg-hover);
+        color: var(--exit-btn-font-color-hover);
+    }
+}
