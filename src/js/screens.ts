@@ -7,7 +7,8 @@
  * @module screens
  */
 
-import { renderBoard, enableBoardFlip, themePreviewSrc, THEMES, type Theme } from './board';
+import { themePreviewSrc, THEMES, type Theme } from './board';
+import { initGame } from './game';
 import {
     returnStartScreen,
     returnMainMenu,
@@ -119,8 +120,7 @@ function setText(selector: string, text: string): void {
 
 /**
  * Renders the game screen: header and board container, fills the themed icons,
- * colors the current-player indicator, generates the board and wires the exit
- * button back to the menu.
+ * starts the match logic and wires the exit button back to the menu.
  */
 function showGame(): void {
     document.body.classList.remove('menu-open');
@@ -128,9 +128,12 @@ function showGame(): void {
     mount(returnPlayingHeader() + '<section id="memory-board"></section>');
 
     fillThemeIcons();
-    setCurrentPlayerColor();
-    renderBoard(state.cards / 2, state.theme);
-    enableBoardFlip();
+    initGame({
+        pairs: state.cards / 2,
+        theme: state.theme,
+        startingPlayer: state.player,
+        onRestart: showMenu,
+    });
 
     document.querySelector('#exit-btn')?.addEventListener('click', showMenu);
 }
@@ -143,15 +146,6 @@ function fillThemeIcons(): void {
     document.querySelectorAll<HTMLImageElement>('img[data-file-name]').forEach(icon => {
         icon.src = `/assets/themes/${state.theme}/${icon.dataset.fileName}`;
     });
-}
-
-/**
- * Tints the current-player icon with the selected starting player's color.
- */
-function setCurrentPlayerColor(): void {
-    const rect = document.querySelector<SVGRectElement>('#current-player--icon rect');
-    const color = state.player === 'one' ? '--color-player-one' : '--color-player-two';
-    if (rect) rect.style.fill = `var(${color})`;
 }
 
 /**
