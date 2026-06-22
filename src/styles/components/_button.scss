@@ -1,0 +1,47 @@
+@use '../abstracts/mixins' as *;
+
+#play-btn {
+    all: unset;
+    background-color: var(--start-btn);
+    font-family: RedRose;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 12px;
+    font-size: 40px;
+    font-weight: bold;
+    transition: all .2s ease-in-out;
+    &:hover {
+        padding: 18px;
+        margin: -6px;
+        transition: all .2s ease-in-out;
+        cursor: pointer;
+    }
+    & img {
+        width: 50px;
+        transition: all .2s ease-in-out;
+    }
+    &:hover &--controller {
+        rotate: -35deg;
+        transition: all .2s ease-in-out;
+    }
+    &--arrow {
+        scale: .6;
+    }
+    &:hover &--arrow{
+        scale: 1;
+        transition: all .2s ease-in-out;
+    }
+}
+
+.primary-btn {
+    all: unset;
+    @include flex-center;
+    background-position: center;
+    justify-self: flex-end;
+    font-family: var(--font-family-btn);
+    border-radius: var(--border-radius);
+    border: 2px solid var(--btn-border-color);
+    padding: 8px 20px;
+}
