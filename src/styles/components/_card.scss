@@ -1,0 +1,71 @@
+@use '../abstracts/mixins' as *;
+
+#memory-board {
+    --card-size: clamp(80px, 20vmin, 250px);
+    display: grid;
+    grid-template-columns: repeat(var(--cols, 6), auto);
+    justify-content: center;
+    align-content: center;
+    gap: clamp(8px, 1.2vw, 18px);
+    width: 100%;
+    margin: 0 auto 32px;
+    perspective: 1200px;
+}
+
+.card {
+    all: unset;
+    position: relative;
+    width: calc(var(--card-size) * min(1, var(--aspect, 1)));
+    aspect-ratio: var(--card-aspect, 1 / 1);
+    cursor: pointer;
+}
+
+.card__inner {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    transition: all .2s ease-in-out;
+}
+
+.card.is-flipped .card__inner,
+.card.is-matched .card__inner {
+    transform: rotateY(180deg);
+}
+
+.card__face {
+    position: absolute;
+    inset: 0;
+    @include flex-center;
+    overflow: hidden;
+    backface-visibility: hidden;
+    border-radius: var(--card-radius, 8px);
+    box-shadow: var(--card-shaddow, none);
+    filter: var(--border-filter, none);
+}
+
+.card__face--back {
+    background: var(--card-background, var(--color-primary));
+
+    & img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.card__face--front {
+    background-color: var(--card-front-background);
+    transform: rotateY(180deg);
+    width: 100%;
+
+    & img {
+        max-width: 70%;
+        max-height: 70%;
+        object-fit: contain;
+    }
+}
+
+.card:hover:not(.is-flipped):not(.is-matched) .card__inner {
+    scale: 1.02;
+    transition: all .2s ease-in-out;
+}
