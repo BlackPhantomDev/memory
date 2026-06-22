@@ -166,3 +166,60 @@ export function returnPlayingHeader(): string {
         </section>
     `;
 }
+
+/**
+ * Returns the "Game over" end screen with the final score of both players.
+ *
+ * @param theme - Active theme (for the player icons).
+ * @param scoreOne - Blue player's score.
+ * @param scoreTwo - Orange player's score.
+ * @returns The game-over screen HTML.
+ */
+export function returnGameOverScreen(theme: Theme, scoreOne: number, scoreTwo: number): string {
+    return `
+        <div class="endscreen endscreen--gameover">
+            <h1 class="endscreen__title">GAME OVER</h1>
+            <p class="endscreen__label">Final score</p>
+            <div class="final-score">
+                <span class="final-score__item final-score__item--one">
+                    <img src="/assets/themes/${theme}/player-one.svg" alt="" /> Blue <b>${scoreOne}</b>
+                </span>
+                <span class="final-score__item final-score__item--two">
+                    <img src="/assets/themes/${theme}/player-two.svg" alt="" /> Orange <b>${scoreTwo}</b>
+                </span>
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * Returns the result end screen: the winner ("The winner is ... Player") or a
+ * draw, with the themed graphic and a button back to the menu. The code_vibes
+ * theme adds confetti for a win.
+ *
+ * @param theme - Active theme (for the result asset).
+ * @param result - `'one'` / `'two'` for a winner, or `'draw'`.
+ * @returns The result screen HTML.
+ */
+export function returnResultScreen(theme: Theme, result: 'one' | 'two' | 'draw'): string {
+    const isDraw = result === 'draw';
+    const label = isDraw ? "It's a" : 'The winner is';
+    const title = isDraw ? 'DRAW' : result === 'one' ? 'Blue Player' : 'Orange Player';
+    const titleClass = isDraw ? '' : ` endscreen__title--player-${result}`;
+    const image = isDraw ? 'draw.svg' : `player-${result}-won.svg`;
+    const confetti =
+        theme === 'code_vibes' && !isDraw
+            ? `<img class="endscreen__confetti" src="/assets/themes/code_vibes/Confetti.svg" alt="" />`
+            : '';
+    const buttonText = theme === 'code_vibes' ? 'Back to start' : 'Home';
+
+    return `
+        <div class="endscreen endscreen--result">
+            ${confetti}
+            <p class="endscreen__label">${label}</p>
+            <h1 class="endscreen__title${titleClass}">${title}</h1>
+            <img class="endscreen__graphic" src="/assets/themes/${theme}/${image}" alt="" />
+            <button id="play-again-btn" type="button">${buttonText}</button>
+        </div>
+    `;
+}
