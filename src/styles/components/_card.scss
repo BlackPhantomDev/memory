@@ -79,3 +79,12 @@
     scale: 1.02;
     transition: all .2s ease-in-out;
 }
+
+// Dim the player whose turn it is not.
+#players-label > div {
+    transition: opacity 0.2s ease-in-out;
+
+    &:not(.is-active) {
+        opacity: 0.4;
+    }
+}
