@@ -1,8 +1,12 @@
 @use 'abstracts/mixins';
 @use 'abstracts/functions';
+@use 'base/fonts';
 @use 'base/reset';
 @use 'base/root';
 @use 'base/typography';
 @use 'themes';
 @use 'components/card';
 @use 'components/button';
+@use 'layout/footer';
+//@use 'layout/header';
+@use 'pages';
