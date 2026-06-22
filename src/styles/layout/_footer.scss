@@ -1,9 +1,6 @@
 @use '../abstracts/mixins' as *;
 
 footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
     @include flex-center;
     gap: 16px;
     width: 100%;
