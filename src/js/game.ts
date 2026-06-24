@@ -1,9 +1,6 @@
 /**
  * In-game match logic for a two-player memory round.
  *
- * Renders the board, handles flipping, pair matching, scoring, turn switching
- * and the end-of-game result.
- *
  * @module game
  */
 
@@ -12,6 +9,9 @@ import { returnGameOverScreen, returnResultScreen } from './templates';
 
 /** Player identifier: `'one'` = Blue, `'two'` = Orange. */
 type Player = 'one' | 'two';
+
+/** Round outcome: a winning player or a draw. */
+type Result = Player | 'draw';
 
 /** Delay (ms) before a matched pair locks in. */
 const MATCH_DELAY = 450;
@@ -27,14 +27,147 @@ const RESULT_DELAY = 3000;
 
 /** Options for starting a game round. */
 export interface GameOptions {
-    /** Number of pairs on the board. */
-    pairs: number;
-    /** Theme to play with. */
-    theme: Theme;
-    /** Player who takes the first turn. */
-    startingPlayer: Player;
-    /** Called when the player chooses to leave the result screen. */
-    onRestart: () => void;
+  /** Number of pairs on the board. */
+  pairs: number;
+  /** Theme to play with. */
+  theme: Theme;
+  /** Player who takes the first turn. */
+  startingPlayer: Player;
+  /** Called when the player chooses to leave the result screen. */
+  onRestart: () => void;
+}
+
+/**
+ * Drives a single memory round: flipping, pair matching, scoring, turn
+ * switching and the end-of-game result.
+ */
+class MemoryGame {
+  private readonly opts: GameOptions;
+  private readonly board: HTMLElement;
+  private readonly scores: Record<Player, number> = { one: 0, two: 0 };
+  private current: Player;
+  private matchedPairs = 0;
+  private first: HTMLButtonElement | null = null;
+  private locked = false;
+
+  /**
+   * Renders the board and wires the click handler for one round.
+   *
+   * @param opts - Round configuration.
+   */
+  constructor(opts: GameOptions) {
+    this.opts = opts;
+    this.current = opts.startingPlayer;
+    renderBoard(opts.pairs, opts.theme);
+    this.board = document.querySelector<HTMLElement>('#memory-board')!;
+    this.board.addEventListener('click', (e) => this.onClick(e));
+    this.setCurrentPlayer();
+    this.updateScores();
+  }
+
+  /** Flips the clicked card and evaluates once two cards are open. */
+  private onClick(e: MouseEvent): void {
+    const card = (e.target as HTMLElement).closest<HTMLButtonElement>('.card');
+    if (!card || this.locked) return;
+    if (card.classList.contains('is-flipped') || card.classList.contains('is-matched')) return;
+
+    card.classList.add('is-flipped');
+    if (!this.first) {
+      this.first = card;
+      return;
+    }
+    this.locked = true;
+    this.evaluatePair(this.first, card);
+  }
+
+  /** Resolves an open pair as a match or a mismatch after a short delay. */
+  private evaluatePair(a: HTMLButtonElement, b: HTMLButtonElement): void {
+    const matched = a.dataset.cardId === b.dataset.cardId;
+    const resolve = (): void => (matched ? this.keepPair(a, b) : this.hidePair(a, b));
+    window.setTimeout(resolve, matched ? MATCH_DELAY : MISMATCH_DELAY);
+  }
+
+  /** Locks a matched pair and scores it for the current player. */
+  private keepPair(a: HTMLButtonElement, b: HTMLButtonElement): void {
+    a.classList.add('is-matched');
+    b.classList.add('is-matched');
+    this.scores[this.current]++;
+    this.matchedPairs++;
+    this.updateScores();
+    this.endTurn(false);
+  }
+
+  /** Flips a non-matching pair back. */
+  private hidePair(a: HTMLButtonElement, b: HTMLButtonElement): void {
+    a.classList.remove('is-flipped');
+    b.classList.remove('is-flipped');
+    this.endTurn(true);
+  }
+
+  /** Clears the open cards, then ends the game or hands over the turn. */
+  private endTurn(switchPlayer: boolean): void {
+    this.first = null;
+    this.locked = false;
+    if (this.matchedPairs === this.opts.pairs) {
+      this.finish();
+    } else if (switchPlayer) {
+      this.current = this.current === 'one' ? 'two' : 'one';
+      this.setCurrentPlayer();
+    }
+  }
+
+  /** Writes both score counters. */
+  private updateScores(): void {
+    setText('#player-one--counter', String(this.scores.one));
+    setText('#player-two--counter', String(this.scores.two));
+  }
+
+  /** Tints the current-player indicator and marks the active player label. */
+  private setCurrentPlayer(): void {
+    const rect = document.querySelector<SVGRectElement>('#current-player--icon rect');
+    const color = this.current === 'one' ? '--color-player-one' : '--color-player-two';
+    if (rect) rect.style.fill = `var(${color})`;
+    document.querySelector('#player-one-label')?.classList.toggle('is-active', this.current === 'one');
+    document.querySelector('#player-two-label')?.classList.toggle('is-active', this.current === 'two');
+  }
+
+  /** Starts the end sequence once the last pair is found. */
+  private finish(): void {
+    window.setTimeout(() => this.showGameOver(), GAME_OVER_DELAY);
+  }
+
+  /** Shows the game-over screen, then the result after a delay. */
+  private showGameOver(): void {
+    showEndscreen(returnGameOverScreen(this.opts.theme, this.scores.one, this.scores.two));
+    window.setTimeout(() => this.showResult(), RESULT_DELAY);
+  }
+
+  /** Shows the winner / draw screen and wires the play-again button. */
+  private showResult(): void {
+    showEndscreen(returnResultScreen(this.opts.theme, this.outcome()));
+    document.querySelector('#play-again-btn')?.addEventListener('click', () => this.restart());
+  }
+
+  /** Removes the overlay and returns to the menu. */
+  private restart(): void {
+    document.querySelector('#endscreen')?.remove();
+    this.opts.onRestart();
+  }
+
+  /** Determines the round outcome from the scores. */
+  private outcome(): Result {
+    if (this.scores.one === this.scores.two) return 'draw';
+    return this.scores.one > this.scores.two ? 'one' : 'two';
+  }
+}
+
+/**
+ * Starts a new memory round.
+ *
+ * @param opts - Round configuration.
+ */
+export function initGame(opts: GameOptions): void {
+  new MemoryGame(opts);
 }
 
 /**
@@ -44,137 +177,8 @@ export interface GameOptions {
  * @param text - Text to set.
  */
 function setText(selector: string, text: string): void {
-    const el = document.querySelector(selector);
-    if (el) el.textContent = text;
-}
-
-/**
- * Renders the board and wires up the full match loop for one round.
- *
- * @param opts - Round configuration.
- */
-export function initGame(opts: GameOptions): void {
-    renderBoard(opts.pairs, opts.theme);
-
-    const boardEl = document.querySelector<HTMLElement>('#memory-board');
-    if (!boardEl) return;
-    const board: HTMLElement = boardEl;
-
-    let current: Player = opts.startingPlayer;
-    const scores: Record<Player, number> = { one: 0, two: 0 };
-    let matchedPairs = 0;
-    let first: HTMLButtonElement | null = null;
-    let locked = false;
-
-    setCurrentPlayer(current);
-    updateScores();
-
-    board.addEventListener('click', onClick);
-
-    /**
-     * Handles a click on a card: flips it and, once two are open, evaluates
-     * them.
-     *
-     * @param e - The click event.
-     */
-    function onClick(e: MouseEvent): void {
-        const card = (e.target as HTMLElement).closest<HTMLButtonElement>('.card');
-        if (!card || locked) return;
-        if (card.classList.contains('is-flipped') || card.classList.contains('is-matched')) return;
-
-        card.classList.add('is-flipped');
-
-        if (!first) {
-            first = card;
-            return;
-        }
-
-        locked = true;
-        if (first.dataset.cardId === card.dataset.cardId) {
-            resolveMatch(first, card);
-        } else {
-            resolveMismatch(first, card);
-        }
-    }
-
-    /**
-     * Locks a matched pair, awards a point and lets the player play again.
-     *
-     * @param a - First card of the pair.
-     * @param b - Second card of the pair.
-     */
-    function resolveMatch(a: HTMLButtonElement, b: HTMLButtonElement): void {
-        window.setTimeout(() => {
-            a.classList.add('is-matched');
-            b.classList.add('is-matched');
-            scores[current]++;
-            matchedPairs++;
-            updateScores();
-            first = null;
-            locked = false;
-            if (matchedPairs === opts.pairs) finish();
-        }, MATCH_DELAY);
-    }
-
-    /**
-     * Flips a non-matching pair back and passes the turn to the other player.
-     *
-     * @param a - First card.
-     * @param b - Second card.
-     */
-    function resolveMismatch(a: HTMLButtonElement, b: HTMLButtonElement): void {
-        window.setTimeout(() => {
-            a.classList.remove('is-flipped');
-            b.classList.remove('is-flipped');
-            first = null;
-            locked = false;
-            current = current === 'one' ? 'two' : 'one';
-            setCurrentPlayer(current);
-        }, MISMATCH_DELAY);
-    }
-
-    /**
-     * Writes both score counters.
-     */
-    function updateScores(): void {
-        setText('#player-one--counter', String(scores.one));
-        setText('#player-two--counter', String(scores.two));
-    }
-
-    /**
-     * Tints the current-player indicator and marks the active player label.
-     *
-     * @param player - The player whose turn it is.
-     */
-    function setCurrentPlayer(player: Player): void {
-        const rect = document.querySelector<SVGRectElement>('#current-player--icon rect');
-        if (rect) {
-            rect.style.fill = `var(${player === 'one' ? '--color-player-one' : '--color-player-two'})`;
-        }
-        document.querySelector('#player-one-label')?.classList.toggle('is-active', player === 'one');
-        document.querySelector('#player-two-label')?.classList.toggle('is-active', player === 'two');
-    }
-
-    /**
-     * Runs the end sequence: wait, show the game-over screen, wait again, then
-     * show the winner / draw screen with a button back to the menu.
-     */
-    function finish(): void {
-        const result: Player | 'draw' =
-            scores.one === scores.two ? 'draw' : scores.one > scores.two ? 'one' : 'two';
-
-        window.setTimeout(() => {
-            showEndscreen(returnGameOverScreen(opts.theme, scores.one, scores.two));
-
-            window.setTimeout(() => {
-                showEndscreen(returnResultScreen(opts.theme, result));
-                document.querySelector('#play-again-btn')?.addEventListener('click', () => {
-                    document.querySelector('#endscreen')?.remove();
-                    opts.onRestart();
-                });
-            }, RESULT_DELAY);
-        }, GAME_OVER_DELAY);
-    }
+  const el = document.querySelector(selector);
+  if (el) el.textContent = text;
 }
 
 /**
@@ -183,11 +187,11 @@ export function initGame(opts: GameOptions): void {
  * @param html - The end screen markup.
  */
 function showEndscreen(html: string): void {
-    let overlay = document.querySelector<HTMLElement>('#endscreen');
-    if (!overlay) {
-        overlay = document.createElement('div');
-        overlay.id = 'endscreen';
-        document.body.append(overlay);
-    }
-    overlay.innerHTML = html;
+  let overlay = document.querySelector<HTMLElement>('#endscreen');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'endscreen';
+    document.body.append(overlay);
+  }
+  overlay.innerHTML = html;
 }
