@@ -12,10 +12,10 @@ export type Theme = 'code_vibes' | 'games' | 'da_projects' | 'food';
 
 /** Selectable themes with their menu labels, in display order. */
 export const THEMES: ReadonlyArray<{ id: Theme; label: string }> = [
-    { id: 'code_vibes', label: 'Code vibes theme' },
-    { id: 'games', label: 'Gaming theme' },
-    { id: 'da_projects', label: 'DA Projects theme' },
-    { id: 'food', label: 'Foods theme' },
+  { id: 'code_vibes', label: 'Code vibes theme' },
+  { id: 'games', label: 'Gaming theme' },
+  { id: 'da_projects', label: 'DA Projects theme' },
+  { id: 'food', label: 'Foods theme' },
 ];
 
 /** Selectable board sizes in number of cards (pairs = cards / 2). */
@@ -23,10 +23,10 @@ export const BOARD_SIZES = [16, 24, 36] as const;
 
 /** File extension of the motif images per theme (some ship PNG instead of SVG). */
 const FRONT_EXT: Record<Theme, string> = {
-    code_vibes: 'svg',
-    games: 'svg',
-    da_projects: 'png',
-    food: 'svg',
+  code_vibes: 'svg',
+  games: 'svg',
+  da_projects: 'png',
+  food: 'svg',
 };
 
 /** Maximum number of pairs — every theme provides 18 motifs. */
@@ -45,7 +45,7 @@ const DEFAULT_PAIRS = 8;
  * @returns The card back asset URL.
  */
 export function cardBackSrc(theme: Theme): string {
-    return `/assets/themes/${theme}/card-back.svg`;
+  return `/assets/themes/${theme}/card-back.svg`;
 }
 
 /**
@@ -56,7 +56,7 @@ export function cardBackSrc(theme: Theme): string {
  * @returns The motif asset URL.
  */
 export function cardFrontSrc(theme: Theme, id: number): string {
-    return `/assets/themes/${theme}/cards-front/${id}.${FRONT_EXT[theme]}`;
+  return `/assets/themes/${theme}/cards-front/${id}.${FRONT_EXT[theme]}`;
 }
 
 /**
@@ -67,7 +67,7 @@ export function cardFrontSrc(theme: Theme, id: number): string {
  * @returns The theme preview asset URL.
  */
 export function themePreviewSrc(theme: Theme): string {
-    return `/assets/themes/${theme}/theme-preview.svg`;
+  return `/assets/themes/${theme}/theme-preview.svg`;
 }
 
 /**
@@ -78,11 +78,11 @@ export function themePreviewSrc(theme: Theme): string {
  * @returns The same, now shuffled array.
  */
 function shuffle<T>(arr: T[]): T[] {
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 }
 
 /**
@@ -91,7 +91,7 @@ function shuffle<T>(arr: T[]): T[] {
  * @returns The active theme, falling back to `'food'`.
  */
 function currentTheme(): Theme {
-    return (document.documentElement.dataset.theme as Theme) ?? 'food';
+  return (document.documentElement.dataset.theme as Theme) ?? 'food';
 }
 
 /**
@@ -102,11 +102,9 @@ function currentTheme(): Theme {
  * @returns The aspect ratio as a number, falling back to `1`.
  */
 function themeAspect(): number {
-    const raw = getComputedStyle(document.documentElement)
-        .getPropertyValue('--card-aspect')
-        .trim();
-    const [w, h] = raw.split('/').map(part => parseFloat(part));
-    return w > 0 && h > 0 ? w / h : 1;
+  const raw = getComputedStyle(document.documentElement).getPropertyValue('--card-aspect').trim();
+  const [w, h] = raw.split('/').map((part) => parseFloat(part));
+  return w > 0 && h > 0 ? w / h : 1;
 }
 
 /**
@@ -117,7 +115,7 @@ function themeAspect(): number {
  * @returns The `<button class="card">` HTML as a string.
  */
 function cardMarkup(id: number, theme: Theme): string {
-    return `
+  return `
         <button class="card" type="button" data-card-id="${id}" aria-label="Memory card">
             <span class="card__inner">
                 <span class="card__face card__face--back">
@@ -139,19 +137,22 @@ function cardMarkup(id: number, theme: Theme): string {
  * @param theme - Theme to use.
  */
 export function renderBoard(pairs: number = DEFAULT_PAIRS, theme: Theme = currentTheme()): void {
-    const board = document.querySelector<HTMLElement>('#memory-board');
-    if (!board) return;
+  const board = document.querySelector<HTMLElement>('#memory-board');
+  if (!board) return;
 
-    pairs = Math.min(Math.max(Math.round(pairs), MIN_PAIRS), MAX_PAIRS);
+  pairs = Math.min(Math.max(Math.round(pairs), MIN_PAIRS), MAX_PAIRS);
 
-    const motifs = shuffle(Array.from({ length: MAX_PAIRS }, (_, i) => i + 1)).slice(0, pairs);
-    const deck = shuffle([...motifs, ...motifs]);
+  const motifs = shuffle(Array.from({ length: MAX_PAIRS }, (_, i) => i + 1)).slice(0, pairs);
+  const deck = shuffle([...motifs, ...motifs]);
 
-    const cols = Math.ceil(Math.sqrt(deck.length));
-    const rows = Math.ceil(deck.length / cols);
-    board.style.setProperty('--cols', String(cols));
-    board.style.setProperty('--rows', String(rows));
-    board.style.setProperty('--aspect', String(themeAspect()));
+  // Pick the column count closest to a square that divides the deck evenly,
+  // so every row is full (e.g. 24 -> 6x4 instead of 5x5 with a short row).
+  let cols = Math.ceil(Math.sqrt(deck.length));
+  while (deck.length % cols !== 0) cols++;
+  const rows = deck.length / cols;
+  board.style.setProperty('--cols', String(cols));
+  board.style.setProperty('--rows', String(rows));
+  board.style.setProperty('--aspect', String(themeAspect()));
 
-    board.innerHTML = deck.map(id => cardMarkup(id, theme)).join('');
+  board.innerHTML = deck.map((id) => cardMarkup(id, theme)).join('');
 }
