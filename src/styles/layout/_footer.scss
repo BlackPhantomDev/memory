@@ -7,12 +7,19 @@ footer {
     height: 100px;
     font-family: Almarai;
     font-size: 18px;
-    & a, & p{
+
+    & a, & p, & button {
         color: var(--footer-color);
         text-decoration: none;
-    &a:hover {
-            font-style: italic;
-            cursor: pointer;
-        }
-    };
+    }
+
+    & button {
+        all: unset;
+        color: var(--footer-color);
+    }
+
+    & a:hover, & button:hover {
+        font-style: italic;
+        cursor: pointer;
+    }
 }
