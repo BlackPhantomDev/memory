@@ -10,17 +10,18 @@
 import { themePreviewSrc, THEMES, type Theme } from './board';
 import { initGame } from './game';
 import {
-    returnStartScreen,
-    returnMainMenu,
-    returnPlayingHeader,
-    type MenuState,
+  returnStartScreen,
+  returnMainMenu,
+  returnPlayingHeader,
+  returnExitDialog,
+  type MenuState,
 } from './templates';
 
 /** Current menu selection. */
 const state: MenuState = {
-    player: 'one',
-    theme: 'code_vibes',
-    cards: 16,
+  player: 'one',
+  theme: 'code_vibes',
+  cards: 16,
 };
 
 /**
@@ -29,7 +30,7 @@ const state: MenuState = {
  * @returns The `#play-area` element.
  */
 function playArea(): HTMLElement {
-    return document.querySelector<HTMLElement>('#play-area')!;
+  return document.querySelector<HTMLElement>('#play-area')!;
 }
 
 /**
@@ -38,7 +39,7 @@ function playArea(): HTMLElement {
  * @param html - Markup to render.
  */
 function mount(html: string): void {
-    playArea().innerHTML = html;
+  playArea().innerHTML = html;
 }
 
 /**
@@ -48,16 +49,16 @@ function mount(html: string): void {
  * @param theme - Theme to apply.
  */
 function applyTheme(theme: Theme): void {
-    document.documentElement.dataset.theme = theme;
+  document.documentElement.dataset.theme = theme;
 }
 
 /**
  * Renders the start screen and wires the play button to the main menu.
  */
 function showStart(): void {
-    document.body.classList.remove('menu-open');
-    mount(returnStartScreen());
-    document.querySelector('#play-btn')?.addEventListener('click', showMenu);
+  document.body.classList.remove('menu-open');
+  mount(returnStartScreen());
+  document.querySelector('#play-btn')?.addEventListener('click', showMenu);
 }
 
 /**
@@ -65,16 +66,16 @@ function showStart(): void {
  * inputs and the start button.
  */
 function showMenu(): void {
-    document.body.classList.add('menu-open');
-    mount(returnMainMenu(state));
-    syncSummary();
+  document.body.classList.add('menu-open');
+  mount(returnMainMenu(state));
+  syncSummary();
 
-    const form = document.querySelector<HTMLFormElement>('#main-menu');
-    form?.addEventListener('change', onMenuChange);
-    form?.addEventListener('submit', e => {
-        e.preventDefault();
-        showGame();
-    });
+  const form = document.querySelector<HTMLFormElement>('#main-menu');
+  form?.addEventListener('change', onMenuChange);
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    showGame();
+  });
 }
 
 /**
@@ -84,27 +85,27 @@ function showMenu(): void {
  * @param e - The change event from the menu form.
  */
 function onMenuChange(e: Event): void {
-    const input = e.target as HTMLInputElement;
+  const input = e.target as HTMLInputElement;
 
-    if (input.name === 'player') state.player = input.value as MenuState['player'];
-    if (input.name === 'board-size') state.cards = Number(input.value);
-    if (input.name === 'theme') {
-        state.theme = input.value as Theme;
-        const preview = document.querySelector<HTMLImageElement>('#theme-preview');
-        if (preview) preview.src = themePreviewSrc(state.theme);
-    }
+  if (input.name === 'player') state.player = input.value as MenuState['player'];
+  if (input.name === 'board-size') state.cards = Number(input.value);
+  if (input.name === 'theme') {
+    state.theme = input.value as Theme;
+    const preview = document.querySelector<HTMLImageElement>('#theme-preview');
+    if (preview) preview.src = themePreviewSrc(state.theme);
+  }
 
-    syncSummary();
+  syncSummary();
 }
 
 /**
  * Writes the current selection (theme, player, board size) into the summary bar.
  */
 function syncSummary(): void {
-    const themeLabel = THEMES.find(t => t.id === state.theme)?.label ?? '';
-    setText('#summary-theme', themeLabel);
-    setText('#summary-player', state.player === 'one' ? 'Blue' : 'Orange');
-    setText('#summary-size', `${state.cards} cards`);
+  const themeLabel = THEMES.find((t) => t.id === state.theme)?.label ?? '';
+  setText('#summary-theme', themeLabel);
+  setText('#summary-player', state.player === 'one' ? 'Blue' : 'Orange');
+  setText('#summary-size', `${state.cards} cards`);
 }
 
 /**
@@ -114,28 +115,47 @@ function syncSummary(): void {
  * @param text - Text to set.
  */
 function setText(selector: string, text: string): void {
-    const el = document.querySelector(selector);
-    if (el) el.textContent = text;
+  const el = document.querySelector(selector);
+  if (el) el.textContent = text;
 }
 
 /**
- * Renders the game screen: header and board container, fills the themed icons,
- * starts the match logic and wires the exit button back to the menu.
+ * Renders the game screen: header, board container and exit dialog, fills the
+ * themed icons, starts the match logic and wires the exit confirmation.
  */
 function showGame(): void {
-    document.body.classList.remove('menu-open');
-    applyTheme(state.theme);
-    mount(returnPlayingHeader() + '<section id="memory-board"></section>');
+  document.body.classList.remove('menu-open');
+  applyTheme(state.theme);
+  mount(
+    returnPlayingHeader() + '<section id="memory-board"></section>' + returnExitDialog(state.theme),
+  );
 
-    fillThemeIcons();
-    initGame({
-        pairs: state.cards / 2,
-        theme: state.theme,
-        startingPlayer: state.player,
-        onRestart: showMenu,
-    });
+  fillThemeIcons();
+  initGame({
+    pairs: state.cards / 2,
+    theme: state.theme,
+    startingPlayer: state.player,
+    onRestart: showMenu,
+  });
+  wireExitDialog();
+}
 
-    document.querySelector('#exit-btn')?.addEventListener('click', showMenu);
+/**
+ * Wires the exit confirmation dialog: the header button opens it, "back to
+ * game" / a backdrop click closes it, and confirming returns to the menu.
+ */
+function wireExitDialog(): void {
+  const dialog = document.querySelector<HTMLDialogElement>('#exit-dialog');
+
+  document.querySelector('#exit-btn')?.addEventListener('click', () => dialog?.showModal());
+  document.querySelector('#exit-cancel')?.addEventListener('click', () => dialog?.close());
+  document.querySelector('#exit-confirm')?.addEventListener('click', () => {
+    dialog?.close();
+    showMenu();
+  });
+  dialog?.addEventListener('click', (e) => {
+    if (e.target === dialog) dialog.close();
+  });
 }
 
 /**
@@ -143,14 +163,14 @@ function showGame(): void {
  * matching asset of the active theme.
  */
 function fillThemeIcons(): void {
-    document.querySelectorAll<HTMLImageElement>('img[data-file-name]').forEach(icon => {
-        icon.src = `/assets/themes/${state.theme}/${icon.dataset.fileName}`;
-    });
+  document.querySelectorAll<HTMLImageElement>('img[data-file-name]').forEach((icon) => {
+    icon.src = `/assets/themes/${state.theme}/${icon.dataset.fileName}`;
+  });
 }
 
 /**
  * Boots the app on the start screen.
  */
 export function initApp(): void {
-    showStart();
+  showStart();
 }
