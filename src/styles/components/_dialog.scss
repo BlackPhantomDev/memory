@@ -1,3 +1,5 @@
+@use '../abstracts/mixins' as *;
+
 #imprint-dialog {
     margin: auto;
     padding: 0;
@@ -43,4 +45,74 @@
     &:hover {
         scale: 1.05;
     }
+}
+
+// Exit-confirmation dialog (themed via --popup-* and --exit-btn-* variables).
+#exit-dialog {
+    margin: auto;
+    padding: 0;
+    border: none;
+    border-radius: var(--popup-radius, 24px);
+    max-width: min(92vw, 760px);
+    background: #fff;
+
+    &::backdrop {
+        background: rgba(0, 0, 0, 0.5);
+    }
+}
+
+.exit-dialog__content {
+    @include flex-center;
+    flex-direction: column;
+    gap: 48px;
+    padding: clamp(40px, 6vw, 64px) clamp(32px, 6vw, 80px);
+    text-align: center;
+}
+
+.exit-dialog__title {
+    color: var(--popup-title);
+    font-family: var(--font-family-primary);
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.exit-dialog__actions {
+    @include flex-center;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.exit-dialog__btn {
+    all: unset;
+    padding: 14px 32px;
+    border-radius: var(--btn-border-radius, var(--border-radius));
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-image: var(--btn-bg-img);
+    font-family: var(--font-family-btn);
+    font-size: clamp(16px, 2vw, 22px);
+    font-weight: bold;
+    cursor: pointer;
+    transition: scale 0.15s ease;
+
+    &--cancel {
+        background-color: var(--exit-btn-cancel-bg);
+        color: var(--exit-btn-cancel-font-color);
+    }
+
+    &--confirm {
+        border: 2px solid var(--btn-border-color);
+        background-color: var(--exit-btn-confirm-bg);
+        color: var(--exit-btn-confirm-font-color);
+    }
+
+    &:hover {
+        scale: 1.04;
+    }
+}
+
+// food renders its button labels uppercase.
+:root[data-theme='food'] .exit-dialog__btn {
+    text-transform: uppercase;
 }
