@@ -81,7 +81,7 @@
 }
 
 // Dim the player whose turn it is not.
-#players-label > div {
+#players-label > figure {
     transition: opacity 0.2s ease-in-out;
 
     &:not(.is-active) {

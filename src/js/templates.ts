@@ -8,12 +8,12 @@ import { THEMES, BOARD_SIZES, themePreviewSrc, type Theme } from './board';
 
 /** Selection state shared between the main menu and the game screen. */
 export interface MenuState {
-    /** Starting player: `'one'` = Blue, `'two'` = Orange. */
-    player: 'one' | 'two';
-    /** Selected theme. */
-    theme: Theme;
-    /** Selected board size in number of cards. */
-    cards: number;
+  /** Starting player: `'one'` = Blue, `'two'` = Orange. */
+  player: 'one' | 'two';
+  /** Selected theme. */
+  theme: Theme;
+  /** Selected board size in number of cards. */
+  cards: number;
 }
 
 /**
@@ -22,13 +22,13 @@ export interface MenuState {
  * @returns The start screen HTML.
  */
 export function returnStartScreen(): string {
-    return `
+  return `
         <section id="start-screen">
             <div id="main-title">
-                <h3 id="subtitle">It's play time.</h3>
+                <p id="subtitle">It's play time.</p>
                 <h1>Ready to play?</h1>
             </div>
-            <button id="play-btn">
+            <button id="play-btn" type="button">
                 <img id="play-btn--controller" src="/assets/icons/controller.svg" alt="Controller icon">
                 Play
                 <img id="play-btn--arrow" src="/assets/icons/arrow.svg" alt="Arrow icon">
@@ -50,7 +50,7 @@ export function returnStartScreen(): string {
  * @returns The option HTML.
  */
 function option(name: string, value: string, label: string, checked: boolean): string {
-    return `
+  return `
         <label class="option">
             <input type="radio" name="${name}" value="${value}" ${checked ? 'checked' : ''} />
             <span class="option__label">${label}</span>
@@ -67,7 +67,7 @@ function option(name: string, value: string, label: string, checked: boolean): s
  * @returns The group HTML.
  */
 function group(icon: string, title: string, options: string): string {
-    return `
+  return `
         <fieldset class="menu-group">
             <legend><img class="menu-group__icon" src="/assets/icons/${icon}" alt="" /> ${title}</legend>
             ${options}
@@ -83,17 +83,17 @@ function group(icon: string, title: string, options: string): string {
  * @returns The main menu HTML.
  */
 export function returnMainMenu(state: MenuState): string {
-    const themeOptions = THEMES
-        .map(t => option('theme', t.id, t.label, t.id === state.theme))
-        .join('');
-    const playerOptions =
-        option('player', 'one', 'Blue', state.player === 'one') +
-        option('player', 'two', 'Orange', state.player === 'two');
-    const sizeOptions = BOARD_SIZES
-        .map(n => option('board-size', String(n), `${n} cards`, n === state.cards))
-        .join('');
+  const themeOptions = THEMES.map((t) => option('theme', t.id, t.label, t.id === state.theme)).join(
+    '',
+  );
+  const playerOptions =
+    option('player', 'one', 'Blue', state.player === 'one') +
+    option('player', 'two', 'Orange', state.player === 'two');
+  const sizeOptions = BOARD_SIZES.map((n) =>
+    option('board-size', String(n), `${n} cards`, n === state.cards),
+  ).join('');
 
-    return `
+  return `
         <form id="main-menu">
             <h2 id="menu-title">Settings</h2>
             <div id="menu-groups">
@@ -101,7 +101,7 @@ export function returnMainMenu(state: MenuState): string {
                 ${group('choose-player-color.svg', 'Choose player', playerOptions)}
                 ${group('choose-board-size.svg', 'Board size', sizeOptions)}
             </div>
-            <aside id="menu-side">
+            <div id="menu-side">
                 <img id="theme-preview" src="${themePreviewSrc(state.theme)}" alt="Theme preview" />
                 <div id="menu-summary">
                     <span class="summary-item" id="summary-theme"></span>
@@ -113,7 +113,7 @@ export function returnMainMenu(state: MenuState): string {
                         <img src="/assets/icons/start-game.svg" alt="" /> Start
                     </button>
                 </div>
-            </aside>
+            </div>
         </form>
     `;
 }
@@ -126,27 +126,23 @@ export function returnMainMenu(state: MenuState): string {
  * @returns The playing header HTML.
  */
 export function returnPlayingHeader(): string {
-    return `
-        <section id="header">
+  return `
+        <header id="header">
             <div id="players-label">
-                <div id="player-one-label">
-                <figure>
+                <figure id="player-one-label">
                     <img class="player-icon" data-file-name="player-one.svg" alt="Player one icon" />
                     <figcaption>
-                    Blue
-                    <span id="player-one--counter">0</span>
+                        Blue
+                        <span id="player-one--counter">0</span>
                     </figcaption>
                 </figure>
-                </div>
-                <div id="player-two-label">
-                <figure>
+                <figure id="player-two-label">
                     <img class="player-icon" data-file-name="player-two.svg" alt="Player two icon" />
                     <figcaption>
-                    Orange
-                    <span id="player-two--counter">0</span>
+                        Orange
+                        <span id="player-two--counter">0</span>
                     </figcaption>
                 </figure>
-                </div>
             </div>
             <div id="current-player">
                 <figure>
@@ -157,13 +153,13 @@ export function returnPlayingHeader(): string {
                 </svg>
                 </figure>
             </div>
-            <button id="exit-btn" class="primary-btn">
+            <button id="exit-btn" type="button" class="primary-btn">
                 <svg width="26" height="23" viewBox="0 0 26 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M21.4375 12.5H7.5C7.14583 12.5 6.84896 12.3802 6.60938 12.1406C6.36979 11.901 6.25 11.6042 6.25 11.25C6.25 10.8958 6.36979 10.599 6.60938 10.3594C6.84896 10.1198 7.14583 10 7.5 10H21.4375L20.375 8.9375C20.125 8.6875 20.0052 8.39583 20.0156 8.0625C20.026 7.72917 20.1458 7.4375 20.375 7.1875C20.625 6.9375 20.9219 6.80729 21.2656 6.79688C21.6094 6.78646 21.9062 6.90625 22.1562 7.15625L25.375 10.375C25.625 10.625 25.75 10.9167 25.75 11.25C25.75 11.5833 25.625 11.875 25.375 12.125L22.1562 15.3438C21.9062 15.5938 21.6094 15.7135 21.2656 15.7031C20.9219 15.6927 20.625 15.5625 20.375 15.3125C20.1458 15.0625 20.026 14.7708 20.0156 14.4375C20.0052 14.1042 20.125 13.8125 20.375 13.5625L21.4375 12.5ZM15 6.25V2.5H2.5V20H15V16.25C15 15.8958 15.1198 15.599 15.3594 15.3594C15.599 15.1198 15.8958 15 16.25 15C16.6042 15 16.901 15.1198 17.1406 15.3594C17.3802 15.599 17.5 15.8958 17.5 16.25V20C17.5 20.6875 17.2552 21.276 16.7656 21.7656C16.276 22.2552 15.6875 22.5 15 22.5H2.5C1.8125 22.5 1.22396 22.2552 0.734375 21.7656C0.244792 21.276 0 20.6875 0 20V2.5C0 1.8125 0.244792 1.22396 0.734375 0.734375C1.22396 0.244792 1.8125 0 2.5 0H15C15.6875 0 16.276 0.244792 16.7656 0.734375C17.2552 1.22396 17.5 1.8125 17.5 2.5V6.25C17.5 6.60417 17.3802 6.90104 17.1406 7.14062C16.901 7.38021 16.6042 7.5 16.25 7.5C15.8958 7.5 15.599 7.38021 15.3594 7.14062C15.1198 6.90104 15 6.60417 15 6.25Z"/>
                 </svg>
                 Exit game
             </button>
-        </section>
+        </header>
     `;
 }
 
@@ -176,19 +172,19 @@ export function returnPlayingHeader(): string {
  * @returns The game-over screen HTML.
  */
 export function returnGameOverScreen(theme: Theme, scoreOne: number, scoreTwo: number): string {
-    return `
-        <div class="endscreen endscreen--gameover">
+  return `
+        <section class="endscreen endscreen--gameover">
             <h1 class="endscreen__title">GAME OVER</h1>
             <p class="endscreen__label">Final score</p>
             <div class="final-score">
                 <span class="final-score__item final-score__item--one">
-                    <img src="/assets/themes/${theme}/player-one.svg" alt="" /> Blue <b>${scoreOne}</b>
+                    <img src="/assets/themes/${theme}/player-one.svg" alt="" /> Blue <strong>${scoreOne}</strong>
                 </span>
                 <span class="final-score__item final-score__item--two">
-                    <img src="/assets/themes/${theme}/player-two.svg" alt="" /> Orange <b>${scoreTwo}</b>
+                    <img src="/assets/themes/${theme}/player-two.svg" alt="" /> Orange <strong>${scoreTwo}</strong>
                 </span>
             </div>
-        </div>
+        </section>
     `;
 }
 
@@ -202,24 +198,55 @@ export function returnGameOverScreen(theme: Theme, scoreOne: number, scoreTwo: n
  * @returns The result screen HTML.
  */
 export function returnResultScreen(theme: Theme, result: 'one' | 'two' | 'draw'): string {
-    const isDraw = result === 'draw';
-    const label = isDraw ? "It's a" : 'The winner is';
-    const title = isDraw ? 'DRAW' : result === 'one' ? 'Blue Player' : 'Orange Player';
-    const titleClass = isDraw ? '' : ` endscreen__title--player-${result}`;
-    const image = isDraw ? 'draw.svg' : `player-${result}-won.svg`;
-    const confetti =
-        theme === 'code_vibes' && !isDraw
-            ? `<img class="endscreen__confetti" src="/assets/themes/code_vibes/Confetti.svg" alt="" />`
-            : '';
-    const buttonText = theme === 'code_vibes' ? 'Back to start' : 'Home';
+  const isDraw = result === 'draw';
+  const label = isDraw ? "It's a" : 'The winner is';
+  const title = isDraw ? 'DRAW' : result === 'one' ? 'Blue Player' : 'Orange Player';
+  const titleClass = isDraw ? '' : ` endscreen__title--player-${result}`;
+  const image = isDraw ? 'draw.svg' : `player-${result}-won.svg`;
+  const confetti =
+    theme === 'code_vibes' && !isDraw
+      ? `<img class="endscreen__confetti" src="/assets/themes/code_vibes/Confetti.svg" alt="" />`
+      : '';
+  const buttonText = theme === 'code_vibes' ? 'Back to start' : 'Home';
 
-    return `
-        <div class="endscreen endscreen--result">
+  return `
+        <section class="endscreen endscreen--result">
             ${confetti}
             <p class="endscreen__label">${label}</p>
             <h1 class="endscreen__title${titleClass}">${title}</h1>
             <img class="endscreen__graphic" src="/assets/themes/${theme}/${image}" alt="" />
             <button id="play-again-btn" type="button">${buttonText}</button>
-        </div>
+        </section>
+    `;
+}
+
+/** Exit-confirmation button labels per theme. */
+const EXIT_LABELS: Record<Theme, { cancel: string; confirm: string }> = {
+  code_vibes: { cancel: 'Back to game', confirm: 'Exit game' },
+  games: { cancel: 'No, back to game', confirm: 'Yes, quit game' },
+  da_projects: { cancel: 'Back to game', confirm: 'Exit game' },
+  food: { cancel: 'No, back to game', confirm: 'Exit game' },
+};
+
+/**
+ * Returns the exit-confirmation dialog shown when the header exit button is
+ * clicked. Button labels are theme-specific; colors come from the themed
+ * `--exit-btn-*` variables.
+ *
+ * @param theme - Active theme (for the button labels).
+ * @returns The dialog HTML.
+ */
+export function returnExitDialog(theme: Theme): string {
+  const { cancel, confirm } = EXIT_LABELS[theme];
+  return `
+        <dialog id="exit-dialog" class="exit-dialog">
+            <div class="exit-dialog__content">
+                <h2 class="exit-dialog__title">Are you sure you want to quit the game?</h2>
+                <div class="exit-dialog__actions">
+                    <button id="exit-cancel" type="button" class="exit-dialog__btn exit-dialog__btn--cancel">${cancel}</button>
+                    <button id="exit-confirm" type="button" class="exit-dialog__btn exit-dialog__btn--confirm">${confirm}</button>
+                </div>
+            </div>
+        </dialog>
     `;
 }
