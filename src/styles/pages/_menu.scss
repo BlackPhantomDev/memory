@@ -80,6 +80,7 @@ body.menu-open {
     display: flex;
     align-items: center;
     gap: 12px;
+    width: fit-content;
     padding-left: 12px;
     font-size: 18px;
     cursor: pointer;
@@ -179,8 +180,8 @@ body.menu-open {
 }
 
 #summary-theme { width: 140px; }
-#summary-player { width: 52px; }
-#summary-size { width: 60px; }
+#summary-player { width: 56px; }
+#summary-size { width: 72px; }
 
 .summary-sep {
     flex: none;
@@ -209,7 +210,12 @@ body.menu-open {
         width: 22px;
     }
 
-    &:hover {
+    &:hover:not(:disabled) {
         scale: 1.04;
+    }
+
+    &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
     }
 }

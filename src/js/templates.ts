@@ -5,16 +5,20 @@
  */
 
 import { THEMES, BOARD_SIZES, themePreviewSrc, type Theme } from './board';
+import { asset } from './assets';
 
 /** Selection state shared between the main menu and the game screen. */
 export interface MenuState {
-  /** Starting player: `'one'` = Blue, `'two'` = Orange. */
-  player: 'one' | 'two';
-  /** Selected theme. */
-  theme: Theme;
-  /** Selected board size in number of cards. */
-  cards: number;
+  /** Starting player: `'one'` = Blue, `'two'` = Orange, or `null` if unchosen. */
+  player: 'one' | 'two' | null;
+  /** Selected theme, or `null` if unchosen. */
+  theme: Theme | null;
+  /** Selected board size in number of cards, or `null` if unchosen. */
+  cards: number | null;
 }
+
+/** Theme whose preview is shown before the user picks one. */
+const DEFAULT_PREVIEW_THEME: Theme = THEMES[0].id;
 
 /**
  * Returns the start screen markup (title and play button).
@@ -29,12 +33,12 @@ export function returnStartScreen(): string {
                 <h1>Ready to play?</h1>
             </div>
             <button id="play-btn" type="button">
-                <img id="play-btn--controller" src="/assets/icons/controller.svg" alt="Controller icon">
+                <img id="play-btn--controller" src="${asset('assets/icons/controller.svg')}" alt="Controller icon">
                 Play
-                <img id="play-btn--arrow" src="/assets/icons/arrow.svg" alt="Arrow icon">
+                <img id="play-btn--arrow" src="${asset('assets/icons/arrow.svg')}" alt="Arrow icon">
             </button>
             <div id="background-icon">
-                <img src="/assets/icons/controller-background.svg" alt="Background icon">
+                <img src="${asset('assets/icons/controller-background.svg')}" alt="">
             </div>
         </section>
     `;
@@ -69,7 +73,7 @@ function option(name: string, value: string, label: string, checked: boolean): s
 function group(icon: string, title: string, options: string): string {
   return `
         <fieldset class="menu-group">
-            <legend><img class="menu-group__icon" src="/assets/icons/${icon}" alt="" /> ${title}</legend>
+            <legend><img class="menu-group__icon" src="${asset(`assets/icons/${icon}`)}" alt="" /> ${title}</legend>
             ${options}
         </fieldset>`;
 }
@@ -102,7 +106,7 @@ export function returnMainMenu(state: MenuState): string {
                 ${group('choose-board-size.svg', 'Board size', sizeOptions)}
             </div>
             <div id="menu-side">
-                <img id="theme-preview" src="${themePreviewSrc(state.theme)}" alt="Theme preview" />
+                <img id="theme-preview" src="${themePreviewSrc(state.theme ?? DEFAULT_PREVIEW_THEME)}" alt="Theme preview" />
                 <div id="menu-summary">
                     <span class="summary-item" id="summary-theme"></span>
                     <span class="summary-sep" aria-hidden="true">/</span>
@@ -110,7 +114,7 @@ export function returnMainMenu(state: MenuState): string {
                     <span class="summary-sep" aria-hidden="true">/</span>
                     <span class="summary-item" id="summary-size"></span>
                     <button id="start-btn" type="submit">
-                        <img src="/assets/icons/start-game.svg" alt="" /> Start
+                        <img src="${asset('assets/icons/start-game.svg')}" alt="" /> Start
                     </button>
                 </div>
             </div>
@@ -178,10 +182,10 @@ export function returnGameOverScreen(theme: Theme, scoreOne: number, scoreTwo: n
             <p class="endscreen__label">Final score</p>
             <div class="final-score">
                 <span class="final-score__item final-score__item--one">
-                    <img src="/assets/themes/${theme}/player-one.svg" alt="" /> Blue <strong>${scoreOne}</strong>
+                    <img src="${asset(`assets/themes/${theme}/player-one.svg`)}" alt="" /> Blue <strong>${scoreOne}</strong>
                 </span>
                 <span class="final-score__item final-score__item--two">
-                    <img src="/assets/themes/${theme}/player-two.svg" alt="" /> Orange <strong>${scoreTwo}</strong>
+                    <img src="${asset(`assets/themes/${theme}/player-two.svg`)}" alt="" /> Orange <strong>${scoreTwo}</strong>
                 </span>
             </div>
         </section>
@@ -205,7 +209,7 @@ export function returnResultScreen(theme: Theme, result: 'one' | 'two' | 'draw')
   const image = isDraw ? 'draw.svg' : `player-${result}-won.svg`;
   const confetti =
     theme === 'code_vibes' && !isDraw
-      ? `<img class="endscreen__confetti" src="/assets/themes/code_vibes/Confetti.svg" alt="" />`
+      ? `<img class="endscreen__confetti" src="${asset('assets/themes/code_vibes/Confetti.svg')}" alt="" />`
       : '';
   const buttonText = theme === 'code_vibes' ? 'Back to start' : 'Home';
 
@@ -214,7 +218,7 @@ export function returnResultScreen(theme: Theme, result: 'one' | 'two' | 'draw')
             ${confetti}
             <p class="endscreen__label">${label}</p>
             <h1 class="endscreen__title${titleClass}">${title}</h1>
-            <img class="endscreen__graphic" src="/assets/themes/${theme}/${image}" alt="" />
+            <img class="endscreen__graphic" src="${asset(`assets/themes/${theme}/${image}`)}" alt="" />
             <button id="play-again-btn" type="button">${buttonText}</button>
         </section>
     `;

@@ -7,6 +7,7 @@
  * @module screens
  */
 
+import { asset } from './assets';
 import { themePreviewSrc, THEMES, type Theme } from './board';
 import { initGame } from './game';
 import {
@@ -17,11 +18,11 @@ import {
   type MenuState,
 } from './templates';
 
-/** Current menu selection. */
+/** Current menu selection. Nothing is preselected; the user picks each value. */
 const state: MenuState = {
-  player: 'one',
-  theme: 'code_vibes',
-  cards: 16,
+  player: null,
+  theme: null,
+  cards: null,
 };
 
 /**
@@ -74,7 +75,24 @@ function showMenu(): void {
   form?.addEventListener('change', onMenuChange);
   form?.addEventListener('submit', (e) => {
     e.preventDefault();
-    showGame();
+    if (isComplete(state)) showGame(state);
+  });
+
+  wireThemeHover();
+}
+
+/**
+ * Shows each theme's preview while its option is hovered. The preview is left on
+ * the last hovered theme (no revert on mouse-out) so it doesn't jump back.
+ */
+function wireThemeHover(): void {
+  const preview = document.querySelector<HTMLImageElement>('#theme-preview');
+  if (!preview) return;
+
+  document.querySelectorAll<HTMLInputElement>('input[name="theme"]').forEach((input) => {
+    input.closest('.option')?.addEventListener('mouseenter', () => {
+      preview.src = themePreviewSrc(input.value as Theme);
+    });
   });
 }
 
@@ -98,14 +116,33 @@ function onMenuChange(e: Event): void {
   syncSummary();
 }
 
+/** Menu selection with every value chosen (no `null`s). */
+type CompleteMenuState = { [K in keyof MenuState]: NonNullable<MenuState[K]> };
+
 /**
- * Writes the current selection (theme, player, board size) into the summary bar.
+ * Reports whether every setting has been chosen, narrowing the state so the
+ * game can be started with non-null values.
+ *
+ * @param s - Current menu selection.
+ * @returns `true` when theme, player and board size are all set.
+ */
+function isComplete(s: MenuState): s is CompleteMenuState {
+  return s.theme !== null && s.player !== null && s.cards !== null;
+}
+
+/**
+ * Writes the current selection into the summary bar, showing a placeholder
+ * label for each value that has not been chosen yet, and enables the start
+ * button only once everything is selected.
  */
 function syncSummary(): void {
-  const themeLabel = THEMES.find((t) => t.id === state.theme)?.label ?? '';
-  setText('#summary-theme', themeLabel);
-  setText('#summary-player', state.player === 'one' ? 'Blue' : 'Orange');
-  setText('#summary-size', `${state.cards} cards`);
+  const themeLabel = state.theme ? (THEMES.find((t) => t.id === state.theme)?.label ?? '') : '';
+  setText('#summary-theme', themeLabel || 'Game theme');
+  setText('#summary-player', state.player ? (state.player === 'one' ? 'Blue' : 'Orange') : 'Player');
+  setText('#summary-size', state.cards ? `${state.cards} cards` : 'Board size');
+
+  const startBtn = document.querySelector<HTMLButtonElement>('#start-btn');
+  if (startBtn) startBtn.disabled = !isComplete(state);
 }
 
 /**
@@ -123,18 +160,20 @@ function setText(selector: string, text: string): void {
  * Renders the game screen: header, board container and exit dialog, fills the
  * themed icons, starts the match logic and wires the exit confirmation.
  */
-function showGame(): void {
+function showGame(selection: CompleteMenuState): void {
   document.body.classList.remove('menu-open');
-  applyTheme(state.theme);
+  applyTheme(selection.theme);
   mount(
-    returnPlayingHeader() + '<section id="memory-board"></section>' + returnExitDialog(state.theme),
+    returnPlayingHeader() +
+      '<section id="memory-board"></section>' +
+      returnExitDialog(selection.theme),
   );
 
-  fillThemeIcons();
+  fillThemeIcons(selection.theme);
   initGame({
-    pairs: state.cards / 2,
-    theme: state.theme,
-    startingPlayer: state.player,
+    pairs: selection.cards / 2,
+    theme: selection.theme,
+    startingPlayer: selection.player,
     onRestart: showMenu,
   });
   wireExitDialog();
@@ -160,11 +199,13 @@ function wireExitDialog(): void {
 
 /**
  * Fills every theme-bound icon (those carrying `data-file-name`) with the
- * matching asset of the active theme.
+ * matching asset of the given theme.
+ *
+ * @param theme - Theme whose assets the icons are filled from.
  */
-function fillThemeIcons(): void {
+function fillThemeIcons(theme: Theme): void {
   document.querySelectorAll<HTMLImageElement>('img[data-file-name]').forEach((icon) => {
-    icon.src = `/assets/themes/${state.theme}/${icon.dataset.fileName}`;
+    icon.src = asset(`assets/themes/${theme}/${icon.dataset.fileName}`);
   });
 }
 
