@@ -5,13 +5,13 @@
   --font-family-primary: Orbitron;
   --font-family-btn: Orbitron;
   
-  --card-aspect: 2/3;
-  --card-radius: 12px;
+  --card-aspect: 7/8;
+  --card-radius: calc(var(--card-w) * 12 / 105);
   --card-background: linear-gradient(147.13deg, #ED1B76 1.28%, #0A2835 142.53%);
   --card-front-background: #f3d7e2;
   --card-shaddow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   
-  --border-filter: none;
+  --border-filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25));
 
   --header-bg: #fd96c933;
   --header-margin: 32px 32px 0;
