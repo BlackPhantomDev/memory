@@ -7,6 +7,8 @@
  * @module board
  */
 
+import { asset } from './assets';
+
 /** Available themes (matches the folders under `/assets/themes`). */
 export type Theme = 'code_vibes' | 'games' | 'da_projects' | 'food';
 
@@ -45,7 +47,7 @@ const DEFAULT_PAIRS = 8;
  * @returns The card back asset URL.
  */
 export function cardBackSrc(theme: Theme): string {
-  return `/assets/themes/${theme}/card-back.svg`;
+  return asset(`assets/themes/${theme}/card-back.svg`);
 }
 
 /**
@@ -56,7 +58,7 @@ export function cardBackSrc(theme: Theme): string {
  * @returns The motif asset URL.
  */
 export function cardFrontSrc(theme: Theme, id: number): string {
-  return `/assets/themes/${theme}/cards-front/${id}.${FRONT_EXT[theme]}`;
+  return asset(`assets/themes/${theme}/cards-front/${id}.${FRONT_EXT[theme]}`);
 }
 
 /**
@@ -67,7 +69,7 @@ export function cardFrontSrc(theme: Theme, id: number): string {
  * @returns The theme preview asset URL.
  */
 export function themePreviewSrc(theme: Theme): string {
-  return `/assets/themes/${theme}/theme-preview.svg`;
+  return asset(`assets/themes/${theme}/theme-preview.svg`);
 }
 
 /**
