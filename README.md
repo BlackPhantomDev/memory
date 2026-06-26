@@ -3,6 +3,9 @@
 A two-player Memory card game built as a Developer Akademie learning project.
 Flip cards, find the pairs, and the player with the most matches wins.
 
+<!-- TODO: replace with the real demo URL -->
+[![Live Demo](https://img.shields.io/badge/▶%20Live%20Demo-2D9CDB?style=for-the-badge)](https://memory.mischasiegrist.ch)
+
 ![Project preview](public/assets/project-preview.svg)
 
 ## Features
