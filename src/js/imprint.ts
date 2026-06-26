@@ -17,7 +17,6 @@ export function initImprint(): void {
   document.querySelector('#imprint-btn')?.addEventListener('click', () => dialog.showModal());
   document.querySelector('#imprint-close')?.addEventListener('click', () => dialog.close());
 
-  // Close when clicking the backdrop (outside the content box).
   dialog.addEventListener('click', (e) => {
     if (e.target === dialog) dialog.close();
   });

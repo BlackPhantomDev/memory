@@ -15,7 +15,6 @@ body {
     width: 100%;
 }
 
-// Start screen fills the play area and centers its content (center / center).
 #start-screen {
     position: relative;
     @include flex-center;
@@ -68,7 +67,6 @@ body {
         font-weight: bold;
     }
 
-    // Fixed-width counter so the label next to it does not shift on score change.
     #player-one--counter,
     #player-two--counter {
         display: inline-block;

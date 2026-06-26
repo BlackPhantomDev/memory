@@ -2,8 +2,6 @@
 
 $menu-dark: #303131;
 
-// The settings screen sits on a neutral light background regardless of theme,
-// so the footer text needs a dark color to stay readable.
 body.menu-open {
     background: #fff;
 
@@ -114,7 +112,6 @@ body.menu-open {
         }
     }
 
-    // Yellow selection arrow (line + head), shown for the checked option.
     &__arrow {
         position: relative;
         width: 26px;
@@ -172,8 +169,6 @@ body.menu-open {
     font-size: 15px;
 }
 
-// Fixed slot widths keep the separators and start button from shifting as the
-// selected values change.
 .summary-item {
     flex: none;
     white-space: nowrap;

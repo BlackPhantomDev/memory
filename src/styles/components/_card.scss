@@ -2,7 +2,6 @@
 
 #memory-board {
     --gap: clamp(6px, 1.2vmin, 16px);
-    // Acts as a size container so cards can be sized to fit it (see .card).
     container-type: size;
     flex: 1;
     min-height: 0;
@@ -22,7 +21,6 @@
 .card {
     all: unset;
     position: relative;
-    // Largest card width that still fits all columns AND all rows of the board.
     --fit-w: calc((100cqw - (var(--cols, 6) - 1) * var(--gap)) / var(--cols, 6));
     --fit-h: calc((100cqh - (var(--rows, 6) - 1) * var(--gap)) / var(--rows, 6) * var(--aspect, 1));
     --card-w: min(var(--fit-w), var(--fit-h), 250px);
@@ -78,7 +76,6 @@
     transition: all .2s ease-in-out;
 }
 
-// Dim the player whose turn it is not.
 #players-label > figure {
     transition: opacity 0.2s ease-in-out;
 

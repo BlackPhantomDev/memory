@@ -48,7 +48,6 @@
     }
 }
 
-// Exit-confirmation dialog (themed via --popup-* and --exit-btn-* variables).
 #exit-dialog {
     margin: auto;
     padding: 0;
@@ -113,7 +112,6 @@
     }
 }
 
-// food renders its button labels uppercase.
 :root[data-theme='food'] .exit-dialog__btn {
     text-transform: uppercase;
 }

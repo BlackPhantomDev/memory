@@ -147,8 +147,6 @@ export function renderBoard(pairs: number = DEFAULT_PAIRS, theme: Theme = curren
   const motifs = shuffle(Array.from({ length: MAX_PAIRS }, (_, i) => i + 1)).slice(0, pairs);
   const deck = shuffle([...motifs, ...motifs]);
 
-  // Pick the column count closest to a square that divides the deck evenly,
-  // so every row is full (e.g. 24 -> 6x4 instead of 5x5 with a short row).
   let cols = Math.ceil(Math.sqrt(deck.length));
   while (deck.length % cols !== 0) cols++;
   const rows = deck.length / cols;

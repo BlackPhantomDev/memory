@@ -37,7 +37,6 @@
     color: var(--gameover-title);
 }
 
-// Draw uses the themed result title; a winner uses the player's color.
 .endscreen--result .endscreen__title {
     color: var(--result-title);
 }
@@ -75,7 +74,6 @@
     pointer-events: none;
 }
 
-// Final score pills, mirroring the in-game player labels.
 .final-score {
     @include flex-center;
     gap: 16px;
